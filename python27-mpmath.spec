@@ -20,7 +20,11 @@ Source1:        http://mpmath.googlecode.com/files/mpmath-docsrc-%{version}.tar.
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch:      noarch
 
-BuildRequires:  python%{pyver}-devel python3-devel
+BuildRequires:  python%{pyver}-devel
+%if 0%{?with_python3}
+BuildRequires: python3-devel
+%endif # with_python3
+
 # For building documentation
 BuildRequires:  dvipng
 BuildRequires:  python%{pyver}-sphinx
@@ -130,6 +134,10 @@ rm -rf %{buildroot}
 %doc doc/build/*
 
 %changelog
+* Thu Sep 18 2014 Brandon Pierce <brandon@ihashacks.com - 1:1.8.1-4
+- Rebuilt for CentOS 6
+- Make python3 optional
+
 * Wed Jan 01 2014 Susi Lehtola <jussilehtola@fedoraproject.org> - 0.18-1
 - Update to 0.18.
 
