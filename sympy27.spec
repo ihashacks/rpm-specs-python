@@ -1,7 +1,8 @@
 %define __python /usr/bin/python2.7
 %global pyver 27
 %global pybindir /usr/lib/python2.7/bin
-#global pyver %{nil}
+
+%global with_python3 0
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 Name:           sympy27
@@ -19,13 +20,18 @@ BuildArch:      noarch
 
 BuildRequires:  gettext
 BuildRequires:  graphviz
-BuildRequires:  numpy python3-numpy
-BuildRequires:  python%{pyver}-devel python3-devel
-BuildRequires:  python%{pyver}-mpmath python3-mpmath
+BuildRequires:  numpy27
+BuildRequires:  python%{pyver}-devel
+BuildRequires:  python%{pyver}-mpmath
 BuildRequires:  python%{pyver}-sphinx
 BuildRequires:  tex(latex)
 BuildRequires:  dvipng
 BuildRequires:	environment-modules
+%if 0%{?with_python3}
+BuildRequires:  python3-numpy
+BuildRequires:  python3-devel
+BuildRequires:  python3-mpmath
+%endif # with_python3
 
 Requires:       python%{pyver}-matplotlib
 Requires:       python%{pyver}-mpmath
@@ -38,6 +44,7 @@ while keeping the code as simple as possible in order to be
 comprehensible and easily extensible. SymPy is written entirely in
 Python and does not require any external libraries.
 
+%if 0%{?with_python3}
 %package -n python3-%{rname}
 Summary:        A Python3 library for symbolic mathematics
 Requires:       python3-matplotlib
@@ -49,6 +56,7 @@ SymPy aims to become a full-featured computer algebra system (CAS)
 while keeping the code as simple as possible in order to be
 comprehensible and easily extensible. SymPy is written entirely in
 Python and does not require any external libraries.
+%endif # with_python3
 
 %package texmacs
 Summary:        TeXmacs integration for sympy
@@ -82,29 +90,32 @@ sed 's/env python/python%{pyver}/' bin/isympy > bin/isympy.new
 touch -r bin/isympy bin/isympy.new
 mv -f bin/isympy.new bin/isympy
 
+%if 0%{?with_python3}
 # Make a copy for building the python3 version
 cp -a . ../foo
 mv ../foo sympy-0.7.4
+%endif # with_python3
 
 %build
 # Build the python2 version
 %{__python} setup.py build
 
+%if 0%{?with_python3}
 # Build the python3 version
 cd %{rname}-%{version}
 python3 setup.py build
+%endif # with_python3
 
 # Build the documentation
 # we need to load the module for doc build to succeed
 . /etc/profile.d/modules.sh
 module load python
-cd ../doc
+cd doc
 make html
-make cheatsheet
-cd ../%{rname}-%{version}/doc
 make cheatsheet
 
 %install
+%if 0%{?with_python3}
 # Install the python3 version
 cd %{rname}-%{version}
 python3 setup.py install -O1 --skip-build --root %{buildroot}
@@ -113,6 +124,7 @@ sed 's/python%{pyver}/python3/' %{buildroot}%{_bindir}/isympy > \
 touch -r %{buildroot}%{_bindir}/isympy %{buildroot}%{_bindir}/isympy3
 rm -f %{buildroot}%{_bindir}/isympy
 cd ..
+%endif # with_python3
 
 # Install the python2 version
 %{__python} setup.py install -O1 --skip-build --root %{buildroot}
@@ -142,11 +154,13 @@ for i in %{buildroot}%{_bindir}/*py; do
 done
 
 %check
+%if 0%{?with_python3}
 # The python3 tests fail with Unicode errors without this
 export LC_ALL=en_US.UTF-8
 %{__python} setup.py test
 cd %{rname}-%{version}
 python3 setup.py test
+%endif # with_python3
  
 %files
 %doc AUTHORS LICENSE PKG-INFO doc/_build/cheatsheet/cheatsheet.pdf
@@ -156,6 +170,7 @@ python3 setup.py test
 %{pybindir}/*
 %{_mandir}/man1/isympy*
 
+%if 0%{?with_python3}
 %files -n python3-%{rname}
 %doc %{rname}-%{version}/AUTHORS %{rname}-%{version}/LICENSE
 %doc %{rname}-%{version}/PKG-INFO
@@ -163,6 +178,7 @@ python3 setup.py test
 %{python3_sitelib}/sympy/
 %{python3_sitelib}/sympy-%{version}-*.egg-info
 %{_bindir}/isympy3
+%endif # with_python3
 
 %files texmacs
 %doc data/TeXmacs/LICENSE
@@ -177,6 +193,11 @@ python3 setup.py test
 %{_docdir}/%{name}-doc/html
 
 %changelog
+* Fri Sep  9 2014 Brandon Pierce <brandon@ihashacks.com> - 0.7.4-1
+- Rebuilt for CentOS 6
+- Make python3 optional
+- Fix doc build errors
+
 * Mon Dec  9 2013 Jerry James <loganjerry@gmail.com> - 0.7.4-1
 - Update to 0.7.4
 - Python 2 and 3 sources are now in the same tarball
