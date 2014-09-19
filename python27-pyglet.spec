@@ -27,7 +27,9 @@ Source1: pyglet-get-tarball.sh
 
 BuildArch: noarch
 BuildRequires: python%{pyver}-devel
+%if 0%{?with_python3}
 BuildRequires: python3-devel
+%endif # if with_python3
 
 Requires: python%{pyver}
 Requires: python%{pyver}-imaging
@@ -100,7 +102,9 @@ popd
 
 %install
 %{__python} setup.py install --skip-build --root %{buildroot}
+%if 0%{?with_python3}
 %py_byte_compile %{__python} %{buildroot}%{python_sitelib}/%{srcname}
+%endif
 
 %if 0%{?with_python3}
 pushd %{py3dir}
@@ -131,6 +135,10 @@ popd
 
 
 %changelog
+* Fri Sep  9 2014 Brandon Pierce <brandon@ihashacks.com> - 1.2-0.7.alpha1
+- Rebuilt for CentOS 6
+- Make python3 optional
+
 * Mon Oct 07 2013 Petr Viktorin <encukou@gmail.com> - 1.2-0.7.alpha1
 - Enable Python 3 build
 
