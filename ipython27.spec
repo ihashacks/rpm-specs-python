@@ -553,6 +553,12 @@ PYTHONPATH=%{buildroot}%{python_sitelib} \
 %endif # with_python3
 
 %changelog
+* Thu Sep 18 2014 Brandon Pierce <brandon@ihashacks.com - 1.0.0-1
+- update to 1.0.0
+
+* Thu Sep 18 2014 Brandon Pierce <brandon@ihashacks.com - 0.13.2-1
+- Rebuilt for CentOS 6
+
 * Sat Apr  6 2013 Thomas Spura <tomspur@fedoraproject.org> - 0.13.2-1
 - update to 0.13.2 fixes #927169, #947633
 - run tests in xvfb
