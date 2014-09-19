@@ -19,7 +19,7 @@
 
 Name:           ipython27
 %define rname	ipython
-Version:        0.13.2
+Version:        1.0.0
 Release:        1%{?dist}.1
 Summary:        An enhanced interactive Python shell
 
@@ -30,10 +30,6 @@ Group:          Development/Libraries
 License:        (BSD and MIT and Python) and GPLv2+
 URL:            http://ipython.org/
 Source0:        http://archive.ipython.org/release/%{version}/%{rname}-%{version}.tar.gz
-# will be in ipython-0.14
-# https://github.com/ipython/ipython/pull/2681
-Patch0:         ipython-0.13.1-dont-require-matplotlib.patch
-Patch1:		ipython-0.13.2-print-syntax.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -113,7 +109,7 @@ Requires:       python27-ipython-console = %{version}-%{release}
 Requires:       python27-ipython-gui = %{version}-%{release}
 Requires:       python27-ipython-notebook = %{version}-%{release}
 Provides:       ipython27 = %{version}-%{release}
-Obsoletes:      ipython27 < 0.13-1
+Obsoletes:      ipython27 < 0.13.2-1
 %description -n python27-ipython
 %{ipython_desc_base}
 
@@ -151,7 +147,7 @@ Requires:       python27-nose
 Requires:       python27-zmq-tests
 Requires:       python27-ipython-console = %{version}-%{release}
 Provides:       ipython27-tests = %{version}-%{release}
-Obsoletes:      ipython27-tests < 0.13-1
+Obsoletes:      ipython27-tests < 0.13.2-1
 %description -n python27-ipython-tests
 This package contains the tests of %{name}.
 You can check this way, if ipython works on your platform.
@@ -160,7 +156,7 @@ You can check this way, if ipython works on your platform.
 Summary:        Documentation for %{name}
 Group:          Documentation
 Provides:       ipython27-doc = %{version}-%{release}
-Obsoletes:      ipython27-doc < 0.13-1
+Obsoletes:      ipython27-doc < 0.13.2-1
 %description -n python27-ipython-doc
 This package contains the documentation of %{name}.
 
@@ -173,7 +169,7 @@ Requires:       PyQt427
 Requires:       python27-matplotlib
 Requires:       python27-pygments
 Provides:       ipython27-gui = %{version}-%{release}
-Obsoletes:      ipython27-gui < 0.13-1
+Obsoletes:      ipython27-gui < 0.13.2-1
 %description -n python27-ipython-gui
 This package contains the gui of %{name}, which requires PyQt.
 
@@ -247,9 +243,6 @@ This package contains the gui of %{name}, which requires PyQt.
 
 %prep
 %setup -q -n %{rname}-%{version}
-
-%patch0 -p 1
-%patch1 -p 0
 
 # delete bundling libs
 pushd IPython/external
@@ -439,17 +432,14 @@ PYTHONPATH=%{buildroot}%{python_sitelib} \
 %{python_sitelib}/IPython/config/
 %{python_sitelib}/IPython/core/
 %{python_sitelib}/IPython/extensions/
-%dir %{python_sitelib}/IPython/frontend/
-%{python_sitelib}/IPython/frontend/terminal/
-%{python_sitelib}/IPython/frontend/__init__.py*
-%{python_sitelib}/IPython/frontend/consoleapp.py*
+%{python_sitelib}/IPython/terminal/
 %{python_sitelib}/IPython/lib/
 %{python_sitelib}/IPython/nbformat/
 %{python_sitelib}/IPython/parallel/
 %{python_sitelib}/IPython/scripts/
 %{python_sitelib}/IPython/utils/
-%{python_sitelib}/IPython/zmq/
-%exclude %{python_sitelib}/IPython/zmq/gui/
+%{python_sitelib}/IPython/kernel/zmq/
+%exclude %{python_sitelib}/IPython/kernel/zmq/gui/
 
 # tests go into subpackage
 %exclude %{python_sitelib}/IPython/*/tests/
@@ -472,13 +462,16 @@ PYTHONPATH=%{buildroot}%{python_sitelib} \
 
 %files -n python27-ipython-notebook
 %defattr(-,root,root,-)
-%{python_sitelib}/IPython/frontend/html/
+%{python_sitelib}/IPython/html/
 
 
 %files -n python27-ipython-gui
 %defattr(-,root,root,-)
-%{python_sitelib}/IPython/zmq/gui
-%{python_sitelib}/IPython/frontend/qt/
+%{python_sitelib}/IPython/kernel/zmq/gui
+%{python_sitelib}/IPython/qt/
+%{python_sitelib}/IPython/nbconvert
+%{python_sitelib}/IPython/sphinxext
+%{python_sitelib}/IPython/kernel
 
 %if 0%{?with_python3}
 %files -n python3-ipython
@@ -560,9 +553,6 @@ PYTHONPATH=%{buildroot}%{python_sitelib} \
 %endif # with_python3
 
 %changelog
-* Thu Sep 18 2014 Brandon Pierce <brandon@ihashacks.com - 0.13.2-1
-- Rebuilt for CentOS 6
-
 * Sat Apr  6 2013 Thomas Spura <tomspur@fedoraproject.org> - 0.13.2-1
 - update to 0.13.2 fixes #927169, #947633
 - run tests in xvfb
