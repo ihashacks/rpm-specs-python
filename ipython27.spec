@@ -19,7 +19,7 @@
 
 Name:           ipython27
 %define rname	ipython
-Version:        1.0.0
+Version:        1.1.0
 Release:        1%{?dist}.1
 Summary:        An enhanced interactive Python shell
 
@@ -109,7 +109,7 @@ Requires:       python27-ipython-console = %{version}-%{release}
 Requires:       python27-ipython-gui = %{version}-%{release}
 Requires:       python27-ipython-notebook = %{version}-%{release}
 Provides:       ipython27 = %{version}-%{release}
-Obsoletes:      ipython27 < 0.13.2-1
+Obsoletes:      ipython27 < 1.0.0-1
 %description -n python27-ipython
 %{ipython_desc_base}
 
@@ -147,7 +147,7 @@ Requires:       python27-nose
 Requires:       python27-zmq-tests
 Requires:       python27-ipython-console = %{version}-%{release}
 Provides:       ipython27-tests = %{version}-%{release}
-Obsoletes:      ipython27-tests < 0.13.2-1
+Obsoletes:      ipython27-tests < 1.0.0-1
 %description -n python27-ipython-tests
 This package contains the tests of %{name}.
 You can check this way, if ipython works on your platform.
@@ -156,7 +156,7 @@ You can check this way, if ipython works on your platform.
 Summary:        Documentation for %{name}
 Group:          Documentation
 Provides:       ipython27-doc = %{version}-%{release}
-Obsoletes:      ipython27-doc < 0.13.2-1
+Obsoletes:      ipython27-doc < 1.0.0-1
 %description -n python27-ipython-doc
 This package contains the documentation of %{name}.
 
@@ -169,7 +169,7 @@ Requires:       PyQt427
 Requires:       python27-matplotlib
 Requires:       python27-pygments
 Provides:       ipython27-gui = %{version}-%{release}
-Obsoletes:      ipython27-gui < 0.13.2-1
+Obsoletes:      ipython27-gui < 1.0.0-1
 %description -n python27-ipython-gui
 This package contains the gui of %{name}, which requires PyQt.
 
@@ -553,6 +553,9 @@ PYTHONPATH=%{buildroot}%{python_sitelib} \
 %endif # with_python3
 
 %changelog
+* Thu Sep 18 2014 Brandon Pierce <brandon@ihashacks.com - 1.1.0-1
+- update to 1.1.0
+
 * Thu Sep 18 2014 Brandon Pierce <brandon@ihashacks.com - 1.0.0-1
 - update to 1.0.0
 
